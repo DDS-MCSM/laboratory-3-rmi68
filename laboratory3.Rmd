@@ -1,0 +1,106 @@
+---
+title: "Laboratory 3"
+author: "Data Driven Security"
+date: "Fall 2018"
+output:
+  html_document:
+    toc: yes
+  html_notebook:
+    highlight: pygments
+    number_sections: yes
+    theme: spacelab
+    toc: yes
+    toc_float: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
+
+### Submit laboratory
+
+In order to complete this laboratory, it will be necessary to submit the `answers_lab3.Rmd` R Markdown file with the answers to the different statements included in this file.
+
+
+# Crawling y Scrapping
+
+Queremos programar un script en R con el que podamos obtener una página web, mediante su URL, y poder analizar su contenido HTML con tal de extraer datos e información específica.
+
+Para la realización de este laboratorio vamos a utilizar la web
+
+  - [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki). (https://www.mediawiki.org/wiki/MediaWiki).
+
+Para ello deberemos descargar la página web de la URL indicada, y almacenarlo en un formato de R apto para ser tratado.
+
+## 1.1 Obtención de la página web
+
+El primer paso para realizar tareas de scraping y crawling es poder descargar los datos de la web. 
+
+Usad las librerías de R `httr` y `XML`/`xml2` para descargar webs y almacenarlas en variables que podamos convertir en un formato fácil de analizar (p.e. de HTML a XML).
+
+## 1.2 Analisis de el contenido de la web
+
+Convertid el código fuente (HTML) de la página web a un objeto analizable en R (XML)
+Identificad el título de la página (que en HTML se etiqueta como “title”).
+
+> En las cabeceras de las web, `<HEAD>...</HEAD>`, esta contenida la información como el título, los ficheros de estilo visual, y meta-información como el nombre del autor de la página, una descripción de esta, el tipo de codificación de esta, o palabras clave que indican qué tipo de información contiene la página.
+
+## 1.3.	Extracción de enlaces 
+
+Extraed usando las expresiones de selección de [XPath](https://www.w3schools.com/xml/xml_xpath.asp) todos los enlaces que salen de esta página con tal de listarlos y poder descargarlas más tarde.
+
+Construid un data frame con el texto de los enlaces, y la url destino.
+
+> En HTML, los enlaces a otras paginas webestan contenidos en tags `<a ...> ... </a>`, los cuales tienen el atributo “href” para indicar la URL del enlace. P.e. “<a href = ‘enlace’>Texto del Enlace</a>”.
+
+
+## 1.4 Exploración de enlaces
+
+Para cada enlace, seguirlo e indicar si está activo (podemos usar el código de status HTTP al hacer una petición a esa URL).
+Construid un data frame con al menos dos columnas, una con el enlace y otra con el código de retorno devuelto en la respuesta a la petición.
+
+Usar la función HEAD de la librería “httr”, que en vez de descargarse la página como haría GET, solo consultamos los atributos de la página o fichero destino.
+
+Identificar el `status_code` en el resultado de la función `HEAD()`:
+
+  - Petición ha sido correcta: 200
+  - Petición no se encontrada: 404
+  - Accesso restringido: 403
+  - etc.
+  
+> Considerad también los enlaces con la URL relativa, con forma “/xxxxxx/xxxxx/a.html”. En estos casos, o bien usad el parametro  `handle` con el dominio de la página o añadid el dominio a la URL con la función `paste()`.
+
+
+> Usad un tiempo de espera entre petición y petición de pocos segundos `Sys.sleep()`.
+
+&nbsp;
+
+# Gráficos en R
+
+
+Elaborad, usando las librerías base y/o ggplot2, gráficos para dar soporte a los datos obtenidos. 
+
+## 2.1	Histograma
+Crear un histograma con la frecuencia de aparición de los enlaces, pero separado por URLs absolutas (con “http…”) y URLs relativas.
+
+> _El objetivo es ver en un histograma cuantas veces aparece cada URL, separando por URLs absolutas y relativas. Un primer paso es añadir a nuestro data.frame una columna indicando qué filas contienen URLs con “http” al inicio y cuáles no, indicando que la URL es absoluta._
+
+> _Para el histograma, en caso de usar gráficos base, creamos un histograma para cada tipo, juntandolos mediante `par()`. Para `lattice` o `ggplot2`, basta con pasar los datos e indicar qué columna deben usarse para separar los datos._
+
+
+## 2.2	Un gráfico de barras
+
+Indicando la suma de enlaces que apuntan a otros dominios o servicios (distinto a https://www.mediawiki.org en el caso de ejemplo) vs. la suma de los otros enlaces.
+
+> _El objetivo es distinguir enlaces que apuntan a mediawiki versus el resto. Teniendo en cuenta que las URLs relativas ya apuntan dentro, hay que analizar las URLs absolutas y comprobar que apunten a `https://www.mediawiki.org`._
+
+
+## 2.3 Pie Chart
+
+Crear un gráfico de tipo _pastel_ indicando los porcentajes de Response Code de nuestro análisis.
+
+> _Por ejemplo, si hay 6 enlaces con un código de retorno “200” y 4 enlaces con “404”, el gráfico mostrará un 60% con la etiqueta “200” y un 40% con la etiqueta “404”._
+
+
